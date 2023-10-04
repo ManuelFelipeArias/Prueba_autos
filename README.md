@@ -11,7 +11,7 @@ Este archivo contiene la aplicación Streamlit que proporciona una interfaz inte
 
 streamlit run presentacion.py
 
-### 2. `run.py`
+### 2. `prueba.ipynb`
 Script principal para ejecutar la aplicación Streamlit.
 
 Cuaderno de Jupyter
@@ -25,7 +25,7 @@ Estudio Predictivo de Precio de Vehículos: Se ha realizado un análisis predict
 
 Clasificación de Clientes de Forma No Supervisada: Se ha realizado una clasificación no supervisada de clientes utilizando el algoritmo de K-Means. Los resultados se pueden explorar de manera interactiva utilizando la aplicación Streamlit en presentacion.py.
 
-Ejecución
+`Ejecución`
 Para ejecutar la aplicación Streamlit, asegúrate de tener la biblioteca Streamlit instalada y luego ejecuta el siguiente comando en la terminal:
 
 streamlit run presentacion.py
