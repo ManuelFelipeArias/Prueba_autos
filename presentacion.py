@@ -1,11 +1,18 @@
 import streamlit as st
-import pandas as pd 
-import matplotlib.pyplot as plt
+import pandas as pd
+import plotly.express as px
+
+def plot_histogram(df, var):
+    """
+    Crea un histograma de la variable `var` del DataFrame `df`.
+    """
+    fig = px.histogram(df, x=var)
+    return fig
 
 st.title('Análisis de Ventas de Vehículos')
 
 # Cargar bases de datos
-df_vehiculos = pd.read_csv('DB_2.csv')  
+df_vehiculos = pd.read_csv('DB_2.csv')
 df_customer = pd.read_csv('df_customer.csv')
 
 # Crear selector para filtrar por tipo de vehículo
@@ -31,7 +38,7 @@ st.subheader('Datos de Clientes Filtrados')
 st.dataframe(df_customer_filtrado)
 
 # Lista de variables numéricas
-numeric_cols = ['Price', 'Mileage', 'Engine volume', 'Cylinders'] 
+numeric_cols = ['Price', 'Mileage', 'Engine volume', 'Cylinders']
 
 # Lista de variables categóricas
 cat_cols = ['Fuel type', 'Gear box type', 'Manufacturer', 'Category']
@@ -39,12 +46,16 @@ cat_cols = ['Fuel type', 'Gear box type', 'Manufacturer', 'Category']
 # Selector de variable para gráfico
 var = st.selectbox('Selecciona variable para graficar', numeric_cols + cat_cols)
 
-# Determinar tipo de gráfico según variable
+# Mostrar gráfico
 if var in numeric_cols:
-    # Histogramas para variables numéricas
-    fig = plt.hist(df_customer_filtrado[var]) 
+    fig = plot_histogram(df_customer_filtrado, var)
+    st.plotly_chart(fig)
 else:
-    # Barras para variables categóricas
-    fig = plt.bar(df_vehiculos_filtrado[var].value_counts().index, df_vehiculos_filtrado[var].value_counts().values)
-    
-st.pyplot(fig)
+    fig = plot_histogram(df_vehiculos_filtrado, var)
+    st.plotly_chart(fig)
+
+# Agregar descripción del gráfico
+if var in numeric_cols:
+    st.write('Histograma de la variable `{}` para los datos de clientes.'.format(var))
+else:
+    st.write('Histograma de la variable `{}` para los datos de vehículos.'.format(var))
