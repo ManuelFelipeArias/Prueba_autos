@@ -1,55 +1,50 @@
 import streamlit as st
-import pandas as pd
+import pandas as pd 
 import matplotlib.pyplot as plt
 
 st.title('Análisis de Ventas de Vehículos')
 
-st.header('Resumen Ejecutivo')
-st.write("""
-- Se analizaron las bases de datos de clientes y vehículos.
-- Se construyeron modelos predictivos de compra de vehículos y precios.
-- Se logró un accuracy de 82% en el modelo de compra de vehículos. 
-- El error cuadrático medio del modelo de precios fue de 47435983.
-""")
+# Cargar bases de datos
+df_vehiculos = pd.read_csv('DB_2.csv')  
+df_customer = pd.read_csv('df_customer.csv')
 
-st.header('Insights Clave')
-insights = [
-    "- Los clientes de 30-50 años son los más propensos a comprar vehículos.",
-    "- El precio se ve impactado principalmente por características como tamaño del motor y tipo de vehículo.",
-    "- Los modelos SUV y Pickup tienen mayor demanda que los Sedan."
-]
+# Crear selector para filtrar por tipo de vehículo
+tipo = st.selectbox('Tipo de vehículo', ['Económico', 'Promedio', 'Caro'])
 
-for insight in insights:
-    st.markdown(insight)
+# Filtrar df_vehiculos según el tipo seleccionado
+if tipo == 'Económico':
+    df_vehiculos_filtrado = df_vehiculos[df_vehiculos['Price'] < 20000]
+elif tipo == 'Promedio':
+    df_vehiculos_filtrado = df_vehiculos[(df_vehiculos['Price'] >= 20000) & (df_vehiculos['Price'] < 40000)]
+else:
+    df_vehiculos_filtrado = df_vehiculos[df_vehiculos['Price'] >= 40000]
 
-st.header('Modelos Predictivos')
+# Mostrar datos filtrados de vehículos
+st.subheader('Datos de Vehículos Filtrados')
+st.dataframe(df_vehiculos_filtrado)
 
-# Cargar datos de ejemplo
-df_ventas = pd.DataFrame(
-    [[20, 1000, 'SUV', 'NY'], 
-     [31, 2000, 'Sedan', 'CA'],
-     [18, 500, 'Hatchback', 'FL']], 
-     columns=['Edad', 'Ingresos', 'TipoVehiculo', 'Estado']) 
+# Filtrar df_customer por clusters 0 y 2
+df_customer_filtrado = df_customer[df_customer['Cluster'].isin([0, 2])]
 
-c = st.container()
-col1, col2 = c.columns(2)
+# Mostrar datos filtrados de clientes
+st.subheader('Datos de Clientes Filtrados')
+st.dataframe(df_customer_filtrado)
 
-# Gráfica modelo de ventas 
-with col1:
-    fig, ax = plt.subplots()
-    ax.bar(df_ventas['TipoVehiculo'], df_ventas['Ingresos'])
-    st.write(fig)
+# Lista de variables numéricas
+numeric_cols = ['Price', 'Mileage', 'Engine volume', 'Cylinders'] 
 
-# Métricas modelo de precios
-with col2:
-    st.metric(label="MSE", value="47435983", delta="10%")
-    st.metric(label="MAE", value="5000", delta="5%")
+# Lista de variables categóricas
+cat_cols = ['Fuel type', 'Gear box type', 'Manufacturer', 'Category']
+
+# Selector de variable para gráfico
+var = st.selectbox('Selecciona variable para graficar', numeric_cols + cat_cols)
+
+# Determinar tipo de gráfico según variable
+if var in numeric_cols:
+    # Histogramas para variables numéricas
+    fig = plt.hist(df_customer_filtrado[var]) 
+else:
+    # Barras para variables categóricas
+    fig = plt.bar(df_vehiculos_filtrado[var].value_counts().index, df_vehiculos_filtrado[var].value_counts().values)
     
-st.markdown('---')
-st.subheader('Recomendaciones')
-st.write(
-    """- Lanzar campañas enfocadas en clientes de 30 a 50 años.
-    - Aumentar inventario de vehículos SUV y Pickup.
-    - Explorar partnership con proveedores de autopartes para reducir costos.
-    """
-)
+st.pyplot(fig)
