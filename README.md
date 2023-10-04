@@ -29,3 +29,6 @@ Clasificación de Clientes de Forma No Supervisada: Se ha realizado una clasific
 Para ejecutar la aplicación Streamlit, asegúrate de tener la biblioteca Streamlit instalada y luego ejecuta el siguiente comando en la terminal:
 
 streamlit run presentacion.py
+
+### 3.`Presentación MIRO` 
+https://miro.com/app/board/uXjVNeQd91I=/?share_link_id=234193085870
